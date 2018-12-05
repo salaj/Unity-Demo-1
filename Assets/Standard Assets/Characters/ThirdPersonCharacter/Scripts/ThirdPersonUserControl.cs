@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityStandardAssets.CrossPlatformInput;
 
 namespace UnityStandardAssets.Characters.ThirdPerson
 {
@@ -15,25 +16,34 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         private void Start()
         {
             //TODO: initialize m_Character and m_Cam
+            this.m_Cam = Camera.main.transform;
+            this.m_Character = GetComponent<ThirdPersonCharacter>();
         }
 
         //Called once per frame
         private void Update()
         {
             //TODO: update m_Jump
+            if (!this.m_Jump)
+            {
+                this.m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
+            }
         }
 
         // Fixed update is called in sync with physics
         private void FixedUpdate()
         {
             //TODO: read inputs
+            var h = CrossPlatformInputManager.GetAxis("Horizontal");
+            var v = CrossPlatformInputManager.GetAxis("Vertical");
 
             //TODO: implement movement
+            this.m_Move = h * transform.right + v * transform.forward;
 
             //TODO: uncomment when ready
-            // pass all parameters to the character control script
-            //this.m_Character.Move(this.m_Move, crouch, this.m_Jump);
-            //this.m_Jump = false;
+            //pass all parameters to the character control script
+            this.m_Character.Move(this.m_Move, false, this.m_Jump);
+            this.m_Jump = false;
         }
     }
 }
